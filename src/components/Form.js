@@ -4,8 +4,7 @@ import styled from "@emotion/styled";
 import { useState } from "react";
 
 import Editable from "./Editable";
-
-import colorPickerIcon from "../images/icons/color-picker.svg";
+import ColorPicker from "./ColorPicker";
 
 const Container = styled.form`
   display: flex;
@@ -28,33 +27,15 @@ const Footer = styled.div`
   justify-content: space-between;
 `;
 
-const Button = ({ onClick, children }) => {
-  const btn = css`
-    cursor: pointer;
-    background: transparent;
-    box-shadow: none;
-    border: none;
-    font-size: 1.2rem;
-    font-weight: bold;
-  `;
-
-  return (
-    <button css={btn} onClick={onClick}>
-      {children}
-    </button>
-  );
-};
-
 const Form = () => {
   const [editTitle, setEditTitle] = useState(false);
   const [editBody, setEditBody] = useState(false);
-
-  const handleChangeColor = () => {};
+  const [color, setColor] = useState("white");
 
   const handlePostNote = () => {};
 
   return (
-    <Container>
+    <Container style={{ backgroundColor: color }}>
       <Main>
         <Editable
           placeholder="The title for my new note"
@@ -65,6 +46,7 @@ const Form = () => {
             font-weight: bold;
             font-size: 14px;
             line-height: 20px;
+            background: inherit;
           `}
         />
         <Editable
@@ -78,15 +60,26 @@ const Form = () => {
             font-size: 18px;
             line-height: 24px;
             margin-top: 0.8rem;
+            background: inherit;
           `}
           multiline={true}
         />
       </Main>
       <Footer>
-        <Button onClick={handleChangeColor}>
-          <img src={colorPickerIcon} alt="color" />
-        </Button>
-        <Button onClick={handlePostNote}>Keep it!</Button>
+        <ColorPicker setColor={setColor} />
+        <button
+          css={css`
+            font-weight: bold;
+            font-size: 18px;
+            line-height: 24px;
+            background: transparent;
+            box-shadow: none;
+            cursor: pointer;
+          `}
+          onClick={handlePostNote}
+        >
+          Keep it!
+        </button>
       </Footer>
     </Container>
   );
