@@ -47,6 +47,7 @@ const Form = () => {
             font-size: 14px;
             line-height: 20px;
             background: inherit;
+            word-break: break-all;
           `}
         />
         <Editable
@@ -61,6 +62,7 @@ const Form = () => {
             line-height: 24px;
             margin-top: 0.8rem;
             background: inherit;
+            word-break: break-all;
           `}
           multiline={true}
         />

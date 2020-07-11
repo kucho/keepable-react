@@ -11,6 +11,7 @@ const Container = styled.nav`
   flex-flow: column;
   align-items: center;
   width: 280px;
+  flex-shrink: 0;
 `;
 
 const Logo = styled.div`

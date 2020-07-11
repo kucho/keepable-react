@@ -44,6 +44,8 @@ const Palette = ({ changeColor, togglePicker }) => {
     right: 0;
     padding-top: 5px;
     padding-left: 5px;
+    transform-origin: top right;
+    transform: translateX(40%) translateY(-120%);
   `;
 
   const Color = styled.div`

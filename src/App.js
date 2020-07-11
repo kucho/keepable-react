@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import Notes from "./pages/Notes";
 import Trash from "./pages/Trash";
 import Sidebar from "./components/Sidebar";
-
+import { ListNotes } from "./services/notes";
 import styled from "@emotion/styled";
 import "./App.css";
 
@@ -12,7 +12,8 @@ const AppWrapper = styled.div`
   flex-flow: column;
   color: #ffffff;
   background: #1d2128;
-  height: 100%;
+  min-height: 100%;
+  height: max-content;
 `;
 
 const Container = styled.div`
@@ -40,10 +41,21 @@ const Title = styled.h1`
 const Page = styled.div`
   flex-grow: 1;
   border-left: 1px solid #d1d1d1;
-  height: 100%;
 `;
 
 function App() {
+  const [notes, setNotes] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const { data, errors } = await ListNotes();
+      if (!errors) {
+        setNotes(data);
+      }
+    }
+    fetchData();
+  }, []);
+
   return (
     <AppWrapper>
       <Router>
@@ -55,8 +67,12 @@ function App() {
             </Header>
             <Page>
               <Switch>
-                <Route path="/trash" component={Trash} />
-                <Route path="/" component={Notes} />
+                <Route path="/trash">
+                  <Trash notes={notes} setNotes={setNotes} />
+                </Route>
+                <Route path="/">
+                  <Notes notes={notes} setNotes={setNotes} />
+                </Route>
               </Switch>
             </Page>
           </Content>
