@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "@emotion/styled";
 import Form from "../components/Form";
 import Note from "../components/Note";
 import { UpdateNote } from "../services/notes";
-import { Colors, getColorName } from "../utils";
+import { getColorName } from "../utils";
 
 const ContentRow = styled.div`
   display: flex;
@@ -41,6 +41,8 @@ const Notes = ({ notes, setNotes }) => {
             <Note
               key={note.id}
               {...note}
+              notes={notes}
+              setNotes={setNotes}
               changeColor={(newColorCode) =>
                 handleChangeColor({ note, newColorCode })
               }

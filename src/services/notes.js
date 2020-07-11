@@ -56,3 +56,19 @@ export const AddNote = async ({ content }) => {
     return { error: "Network error" };
   }
 };
+
+export const DeleteNote = async ({ id }) => {
+  try {
+    const response = await fetch(ApiURL + `/notes/${id}`, {
+      method: "DELETE",
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    if (response.ok) {
+      return { error: null };
+    }
+  } catch (error) {
+    return { error: "Network error" };
+  }
+};

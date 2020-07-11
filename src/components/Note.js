@@ -1,11 +1,11 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { DeleteNote } from "../services/notes";
 import { Colors } from "../utils";
 import ColorPicker from "./ColorPicker";
 
-const TrashIcon = ({ fill = "#999B9E" }) => {
+const TrashIcon = ({ fill = "#999B9E", deleteNote }) => {
   const Container = styled.div`
     display: flex;
     position: relative;
@@ -13,10 +13,11 @@ const TrashIcon = ({ fill = "#999B9E" }) => {
     border-radius: 50%;
     cursor: pointer;
     box-shadow: none;
+    background: #ffffff;
   `;
 
   return (
-    <Container>
+    <Container onClick={deleteNote}>
       <svg
         width="17"
         height="18"
@@ -37,7 +38,7 @@ const TrashIcon = ({ fill = "#999B9E" }) => {
   );
 };
 
-const Footer = ({ deleted, setDeleted, setColor }) => {
+const Footer = ({ deleted, deleteNote, setColor }) => {
   const Container = styled.div`
     display: flex;
     flex-flow: row;
@@ -55,13 +56,31 @@ const Footer = ({ deleted, setDeleted, setColor }) => {
   return (
     <Container>
       <ColorPicker setColor={setColor} />
-      <TrashIcon />
+      <TrashIcon deleteNote={deleteNote} />
     </Container>
   );
 };
 
-const Note = ({ title, body, color, changeColor }) => {
-  const [deleted, setDeleted] = useState(false);
+const Note = ({
+  id,
+  title,
+  body,
+  color,
+  deleted_at,
+  changeColor,
+  notes,
+  setNotes,
+}) => {
+  async function HandleDeleteNote() {
+    const { error } = await DeleteNote({ id });
+    if (!error) {
+      const clone = [...notes];
+      const targetIndex = clone.findIndex((note) => note.id === id);
+      const targetNote = { ...clone[targetIndex], deleted_at: Date.now() };
+      clone[targetIndex] = targetNote;
+      setNotes(clone);
+    }
+  }
 
   const Container = styled.div`
     width: 260px;
@@ -115,8 +134,8 @@ const Note = ({ title, body, color, changeColor }) => {
         </p>
       </Main>
       <Footer
-        deleted={deleted}
-        setDelete={setDeleted}
+        deleted={deleted_at}
+        deleteNote={HandleDeleteNote}
         setColor={changeColor}
       ></Footer>
     </Container>
