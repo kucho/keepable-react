@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 /** @jsx jsx */
+// eslint-disable-next-line
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
 

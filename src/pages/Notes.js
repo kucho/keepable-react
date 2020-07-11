@@ -42,7 +42,6 @@ const PlaceHolder = () => {
     }
   `;
 
-  const Bracket = styled.span``;
   return (
     <Container>
       <p>Notes you add appear here</p>

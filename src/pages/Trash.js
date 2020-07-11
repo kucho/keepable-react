@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "@emotion/styled";
 import Note from "../components/Note";
-import { UpdateNote } from "../services/notes";
 
 const Wrapper = styled.div`
   min-height: 100%;
