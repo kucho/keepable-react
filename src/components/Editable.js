@@ -13,12 +13,12 @@ const ReadContent = ({ text, onClick, style }) => {
 
 const Input = styled.input``;
 
-const WriteContent = ({ text, setText, edit, setEdit, style, multiline }) => {
+const WriteContent = ({ text, setText, toggleEdit, style, multiline }) => {
   const myRef = useRef();
 
   const handleClickOutside = (e) => {
     if (!myRef.current.contains(e.target)) {
-      setEdit(!edit);
+      toggleEdit();
     }
   };
 
@@ -29,7 +29,7 @@ const WriteContent = ({ text, setText, edit, setEdit, style, multiline }) => {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      setEdit(!edit);
+      toggleEdit();
     }
   };
 
@@ -48,16 +48,22 @@ const WriteContent = ({ text, setText, edit, setEdit, style, multiline }) => {
   );
 };
 
-const Editable = ({ placeholder, edit, setEdit, style, multiline }) => {
-  const [text, setText] = useState("");
-
+const Editable = ({
+  placeholder,
+  edit,
+  toggleEdit,
+  style,
+  multiline,
+  text,
+  setText,
+}) => {
   if (edit) {
     return (
       <WriteContent
         text={text}
         setText={setText}
         edit={edit}
-        setEdit={setEdit}
+        toggleEdit={toggleEdit}
         style={style}
         multiline={multiline}
       />
@@ -67,7 +73,7 @@ const Editable = ({ placeholder, edit, setEdit, style, multiline }) => {
   return (
     <ReadContent
       text={text ? text : placeholder}
-      onClick={() => setEdit(!edit)}
+      onClick={() => toggleEdit()}
       style={style}
     />
   );

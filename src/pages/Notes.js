@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import Form from "../components/Form";
 import Note from "../components/Note";
 import { UpdateNote } from "../services/notes";
-import { Colors } from "../utils";
+import { Colors, getColorName } from "../utils";
 
 const ContentRow = styled.div`
   display: flex;
@@ -15,11 +15,11 @@ const ContentRow = styled.div`
 
 const Notes = ({ notes, setNotes }) => {
   async function handleUpdateNote(oldNote, newNote) {
-    const { data, errors } = await UpdateNote({
+    const { data, error } = await UpdateNote({
       id: oldNote.id,
       content: newNote,
     });
-    if (!errors) {
+    if (!error) {
       const clone = [...notes];
       const oldNoteIndex = clone.findIndex((el) => el.id === oldNote.id);
       clone[oldNoteIndex] = data;
@@ -28,12 +28,7 @@ const Notes = ({ notes, setNotes }) => {
   }
 
   const handleChangeColor = ({ note, newColorCode }) => {
-    const colorObj = Object.entries(Colors).find(
-      ([_, value]) => value.code === newColorCode
-    );
-    const colorName = Object.values(colorObj)[0];
-
-    handleUpdateNote(note, { color: colorName });
+    handleUpdateNote(note, { color: getColorName(newColorCode) });
   };
 
   const RegularNotes = () => {
@@ -58,7 +53,7 @@ const Notes = ({ notes, setNotes }) => {
   return (
     <>
       <ContentRow>
-        <Form />
+        <Form onAddedNote={(note) => setNotes([note, ...notes])} />
       </ContentRow>
       <ContentRow
         style={{

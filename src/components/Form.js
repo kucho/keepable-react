@@ -1,8 +1,9 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
-import { useState } from "react";
-
+import { useReducer } from "react";
+import { AddNote } from "../services/notes";
+import { getColorName } from "../utils";
 import Editable from "./Editable";
 import ColorPicker from "./ColorPicker";
 
@@ -27,20 +28,66 @@ const Footer = styled.div`
   justify-content: space-between;
 `;
 
-const Form = () => {
-  const [editTitle, setEditTitle] = useState(false);
-  const [editBody, setEditBody] = useState(false);
-  const [color, setColor] = useState("white");
+const initialState = {
+  title: "",
+  body: "",
+  editTitle: false,
+  editBody: false,
+  color: "#FFFFFF",
+};
 
-  const handlePostNote = () => {};
+function reducer(state, action) {
+  switch (action.type) {
+    case "toggleEditTitle":
+      return { ...state, editTitle: !state.editTitle };
+    case "toggleEditBody":
+      return { ...state, editBody: !state.editBody };
+    case "updateTitle":
+      return { ...state, title: action.title };
+    case "updateBody":
+      return { ...state, body: action.body };
+    case "updateColor":
+      return { ...state, color: action.color };
+    case "resetForm":
+      return { ...state, title: "", body: "", color: "#FFFFFF" };
+    default:
+      throw new Error();
+  }
+}
+
+const Form = ({ onAddedNote }) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const handlePostNote = (e) => {
+    e.preventDefault();
+
+    async function Create() {
+      const { data, error } = await AddNote({
+        content: {
+          title: state.title,
+          body: state.body,
+          color: getColorName(state.color),
+        },
+      });
+
+      if (!error) {
+        onAddedNote(data);
+        dispatch({ type: "resetForm" });
+      }
+    }
+
+    Create();
+  };
 
   return (
-    <Container style={{ backgroundColor: color }}>
+    <Container style={{ backgroundColor: state.color }}>
       <Main>
         <Editable
           placeholder="The title for my new note"
-          edit={editTitle}
-          setEdit={setEditTitle}
+          text={state.title}
+          setText={(title) => dispatch({ type: "updateTitle", title })}
+          edit={state.editTitle}
+          toggleEdit={() => dispatch({ type: "toggleEditTitle" })}
           style={css`
             width: 100%;
             font-weight: bold;
@@ -52,8 +99,10 @@ const Form = () => {
         />
         <Editable
           placeholder="Type something great!"
-          edit={editBody}
-          setEdit={setEditBody}
+          text={state.body}
+          setText={(body) => dispatch({ type: "updateBody", body })}
+          edit={state.editBody}
+          toggleEdit={() => dispatch({ type: "toggleEditBody" })}
           style={css`
             width: 100%;
             font-family: inherit;
@@ -68,7 +117,9 @@ const Form = () => {
         />
       </Main>
       <Footer>
-        <ColorPicker setColor={setColor} />
+        <ColorPicker
+          setColor={(color) => dispatch({ type: "updateColor", color })}
+        />
         <button
           css={css`
             font-weight: bold;

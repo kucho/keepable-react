@@ -20,7 +20,7 @@ const Logo = styled.div`
   align-items: center;
   width: 100%;
   height: 70px;
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid #ffffff;
 `;
 
 const List = styled.ul`
@@ -35,7 +35,7 @@ const Item = styled.li`
   width: 100%;
   font-size: 18px;
   line-height: 20px;
-  color: white;
+  color: #ffffff;
 
   a {
     color: inherit;

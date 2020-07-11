@@ -76,7 +76,7 @@ const Palette = ({ changeColor, togglePicker }) => {
 };
 
 const ColorPicker = ({
-  backgroundColor = "white",
+  backgroundColor = "#FFFFFF",
   iconColor = "#999B9E",
   setColor,
 }) => {

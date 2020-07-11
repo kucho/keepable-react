@@ -13,3 +13,10 @@ export const Colors = {
   purple: { code: "#D7AEFB" },
   pink: { code: "#FDCFE8" },
 };
+
+export function getColorName(code) {
+  const colorObj = Object.entries(Colors).find(
+    ([_, value]) => value.code === code
+  );
+  return Object.values(colorObj)[0];
+}

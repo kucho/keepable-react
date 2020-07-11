@@ -35,3 +35,24 @@ export const UpdateNote = async ({ id, content }) => {
     return { error: "Network error" };
   }
 };
+
+export const AddNote = async ({ content }) => {
+  try {
+    const response = await fetch(ApiURL + `/notes`, {
+      method: "POST",
+      body: JSON.stringify(content),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    const data = await response.json();
+
+    if (response.ok) {
+      return { data };
+    } else {
+      return { error: data.errors.message };
+    }
+  } catch (error) {
+    return { error: "Network error" };
+  }
+};
