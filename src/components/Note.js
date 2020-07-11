@@ -1,11 +1,11 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
 import styled from "@emotion/styled";
-import { DeleteNote } from "../services/notes";
+import { DeleteNote, UpdateNote } from "../services/notes";
 import { Colors } from "../utils";
 import ColorPicker from "./ColorPicker";
 
-const TrashIcon = ({ fill = "#999B9E", deleteNote }) => {
+const TrashIcon = ({ fill = "#999B9E", onClick }) => {
   const Container = styled.div`
     display: flex;
     position: relative;
@@ -17,7 +17,7 @@ const TrashIcon = ({ fill = "#999B9E", deleteNote }) => {
   `;
 
   return (
-    <Container onClick={deleteNote}>
+    <Container onClick={onClick}>
       <svg
         width="17"
         height="18"
@@ -37,8 +37,36 @@ const TrashIcon = ({ fill = "#999B9E", deleteNote }) => {
     </Container>
   );
 };
+const RestoreIcon = ({ fill = "#999B9E", restoreNote }) => {
+  const Container = styled.div`
+    display: flex;
+    position: relative;
+    padding: 0.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: none;
+    background: #ffffff;
+  `;
 
-const Footer = ({ deleted, deleteNote, setColor }) => {
+  return (
+    <Container onClick={restoreNote}>
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 12 18"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M11.0233 4.20712L7.36829 0.269512C7.03484 -0.0895737 6.46562 -0.090101 6.13171 0.269512L2.47634 4.20712C1.97691 4.74501 2.35765 5.625 3.09463 5.625H5.34375V15.1875H2.39147C2.33607 15.1875 2.28121 15.1984 2.23003 15.2196C2.17884 15.2408 2.13234 15.2719 2.09317 15.3111L0.12442 17.2798C-0.141361 17.5456 0.0468655 18 0.422721 18H7.3125C7.7785 18 8.15625 17.6222 8.15625 17.1562V5.625H10.4051C11.139 5.625 11.5248 4.74719 11.0233 4.20712Z"
+          fill={fill}
+        />
+      </svg>
+    </Container>
+  );
+};
+
+const Footer = ({ deleted, softDelete, hardDelete, restoreNote, setColor }) => {
   const Container = styled.div`
     display: flex;
     flex-flow: row;
@@ -50,13 +78,18 @@ const Footer = ({ deleted, deleteNote, setColor }) => {
   `;
 
   if (deleted) {
-    return <Container></Container>;
+    return (
+      <Container>
+        <TrashIcon onClick={hardDelete} />
+        <RestoreIcon restoreNote={restoreNote} />
+      </Container>
+    );
   }
 
   return (
     <Container>
       <ColorPicker setColor={setColor} />
-      <TrashIcon deleteNote={deleteNote} />
+      <TrashIcon onClick={softDelete} />
     </Container>
   );
 };
@@ -71,7 +104,7 @@ const Note = ({
   notes,
   setNotes,
 }) => {
-  async function HandleDeleteNote() {
+  async function HandleSoftDelete() {
     const { error } = await DeleteNote({ id });
     if (!error) {
       const clone = [...notes];
@@ -81,6 +114,33 @@ const Note = ({
       setNotes(clone);
     }
   }
+
+  async function HandleHardDelete() {
+    const { error } = await DeleteNote({ id });
+    if (!error) {
+      const clone = [...notes];
+      const targetIndex = clone.findIndex((note) => note.id === id);
+      clone.splice(targetIndex, 1);
+      setNotes(clone);
+    }
+  }
+
+  async function handleUpdateNote(id, newNote) {
+    const { data, error } = await UpdateNote({
+      id,
+      content: newNote,
+    });
+    if (!error) {
+      const clone = [...notes];
+      const oldNoteIndex = clone.findIndex((el) => el.id === id);
+      clone[oldNoteIndex] = data;
+      setNotes(clone);
+    }
+  }
+
+  const HandleRestoreNote = () => {
+    handleUpdateNote(id, { deleted_at: "" });
+  };
 
   const Container = styled.div`
     width: 260px;
@@ -135,7 +195,9 @@ const Note = ({
       </Main>
       <Footer
         deleted={deleted_at}
-        deleteNote={HandleDeleteNote}
+        softDelete={HandleSoftDelete}
+        hardDelete={HandleHardDelete}
+        restoreNote={HandleRestoreNote}
         setColor={changeColor}
       ></Footer>
     </Container>

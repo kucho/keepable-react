@@ -61,6 +61,11 @@ const Form = ({ onAddedNote }) => {
   const handlePostNote = (e) => {
     e.preventDefault();
 
+    if (state.title.length <= 3) {
+      alert("Title must have more than 3 characters");
+      return false;
+    }
+
     async function Create() {
       const { data, error } = await AddNote({
         content: {

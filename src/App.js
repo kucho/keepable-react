@@ -20,6 +20,7 @@ const Container = styled.div`
   display: flex;
   flex-flow: row nowrap;
   height: 100%;
+  min-height: 100vh;
 `;
 
 const Header = styled.header`
@@ -41,11 +42,11 @@ const Title = styled.h1`
 const Page = styled.div`
   flex-grow: 1;
   border-left: 1px solid #d1d1d1;
+  min-height: 90%;
 `;
 
 function App() {
   const [notes, setNotes] = useState([]);
-
   useEffect(() => {
     async function fetchData() {
       const { data, errors } = await ListNotes();

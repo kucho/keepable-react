@@ -13,6 +13,43 @@ const ContentRow = styled.div`
   padding: 2rem;
 `;
 
+const PlaceHolder = () => {
+  const Container = styled.div`
+    width: 320px;
+    position: relative;
+    font-weight: bold;
+    font-size: 36px;
+    line-height: 48px;
+    text-align: center;
+    margin: 4rem;
+
+    &:before {
+      position: absolute;
+      content: "{";
+      left: 0;
+      top: 10%;
+      font-size: 50px;
+      transform: scale(2, 3);
+    }
+
+    &:after {
+      position: absolute;
+      content: "}";
+      right: 0;
+      top: 10%;
+      font-size: 50px;
+      transform: scale(2, 3);
+    }
+  `;
+
+  const Bracket = styled.span``;
+  return (
+    <Container>
+      <p>Notes you add appear here</p>
+    </Container>
+  );
+};
+
 const Notes = ({ notes, setNotes }) => {
   async function handleUpdateNote(oldNote, newNote) {
     const { data, error } = await UpdateNote({
@@ -62,7 +99,7 @@ const Notes = ({ notes, setNotes }) => {
           flexWrap: "wrap",
         }}
       >
-        <RegularNotes />
+        {notes.length === 0 ? <PlaceHolder /> : <RegularNotes />}
       </ContentRow>
     </>
   );
